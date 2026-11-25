@@ -1,0 +1,20 @@
+{
+   "compilerOptions": {
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
+      "target": "ES2023",
+      "types": ["node"],
+      "rootDir": "./src",
+      "outDir": "./dist",
+      "sourceMap": true,
+      "isolatedModules": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "strict": true,
+      "strictPropertyInitialization": false,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "skipLibCheck": true
+   },
+   "include": ["src"]
+}
