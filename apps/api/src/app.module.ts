@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { AuthModule } from './auth/auth.module.js';
 import { type Environment, validateEnvironment } from './config/environment.js';
 import { HealthController } from './health/health.controller.js';
 
@@ -13,6 +14,7 @@ import { HealthController } from './health/health.controller.js';
          inject: [ConfigService],
          useFactory: (config: ConfigService<Environment, true>) => ({ uri: config.get('MONGODB_URI', { infer: true }) }),
       }),
+      AuthModule,
    ],
    controllers: [HealthController],
 })

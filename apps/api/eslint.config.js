@@ -11,7 +11,7 @@ export default defineConfig([
       extends: [js.configs.recommended, tseslint.configs.recommendedTypeChecked],
       languageOptions: {
          globals: globals.node,
-         parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
+         parserOptions: { projectService: { allowDefaultProject: ['vitest.config.ts'] }, tsconfigRootDir: import.meta.dirname },
       },
    },
    // Must stay last: turns off ESLint rules that conflict with Prettier formatting.
