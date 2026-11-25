@@ -20,6 +20,8 @@ export default defineConfig([
       ],
       languageOptions: {
          globals: globals.browser,
+         // Set explicitly: editors lint both apps in one process and cannot guess which one this is.
+         parserOptions: { tsconfigRootDir: import.meta.dirname },
       },
    },
    // Must stay last: turns off ESLint rules that conflict with Prettier formatting.
