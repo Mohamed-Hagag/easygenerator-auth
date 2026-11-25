@@ -3,8 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { LoggerModule } from 'nestjs-pino';
 
 import { AuthModule } from './auth/auth.module.js';
+import { createLoggerParams } from './common/logger.config.js';
 import { OriginGuard } from './common/origin.guard.js';
 import { type Environment, validateEnvironment } from './config/environment.js';
 import { HealthController } from './health/health.controller.js';
@@ -15,6 +17,7 @@ import { SessionsModule } from './sessions/sessions.module.js';
    imports: [
       // The .env file lives in the repository root; npm runs workspace scripts from apps/api.
       ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env', validate: validateEnvironment }),
+      LoggerModule.forRootAsync({ inject: [ConfigService], useFactory: createLoggerParams }),
       MongooseModule.forRootAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService<Environment, true>) => ({ uri: config.get('MONGODB_URI', { infer: true }) }),

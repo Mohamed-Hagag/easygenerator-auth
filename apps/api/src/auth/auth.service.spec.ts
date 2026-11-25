@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AccessTokenService } from '../sessions/access-token.service.js';
@@ -24,6 +24,8 @@ describe('AuthService', () => {
 
    beforeEach(() => {
       vi.resetAllMocks();
+      vi.spyOn(Logger.prototype, 'log').mockReturnValue(undefined);
+      vi.spyOn(Logger.prototype, 'warn').mockReturnValue(undefined);
    });
 
    it('signs up with the hash instead of the password', async () => {
@@ -55,6 +57,19 @@ describe('AuthService', () => {
 
       await expect(service.signIn(credentials)).rejects.toThrow(new UnauthorizedException('Invalid email or password'));
       expect(passwords.verify).toHaveBeenCalledWith(undefined, credentials.password);
+   });
+
+   it('logs sign-ins by user id, without the email or password', async () => {
+      const log = vi.spyOn(Logger.prototype, 'log').mockReturnValue(undefined);
+      const warn = vi.spyOn(Logger.prototype, 'warn').mockReturnValue(undefined);
+      users.findByEmailWithPassword.mockResolvedValue(user);
+      passwords.verify.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+
+      await service.signIn(credentials);
+      await expect(service.signIn(credentials)).rejects.toThrow();
+
+      expect(log.mock.calls).toEqual([[{ event: 'auth.signin.succeeded', userId: '1' }]]);
+      expect(warn.mock.calls).toEqual([[{ event: 'auth.signin.failed' }]]);
    });
 
    describe('sessions', () => {

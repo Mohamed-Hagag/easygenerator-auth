@@ -62,14 +62,14 @@ describe('SessionsService', () => {
 
    it.each(['', 'sid', 'sid.', '.secret', 'a.b.c'])('ignores malformed token %j', async (token) => {
       await expect(service.rotate(token)).resolves.toBeNull();
-      await service.revoke(token);
+      await expect(service.revoke(token)).resolves.toBe(false);
       expect(model.findOneAndUpdate).not.toHaveBeenCalled();
       expect(model.deleteOne).not.toHaveBeenCalled();
    });
 
    it('revokes a session', async () => {
       model.deleteOne.mockReturnValue(query({ deletedCount: 1 }));
-      await service.revoke('sid.secret');
+      await expect(service.revoke('sid.secret')).resolves.toBe(true);
       expect(model.deleteOne).toHaveBeenCalledWith({ _id: 'sid' });
    });
 

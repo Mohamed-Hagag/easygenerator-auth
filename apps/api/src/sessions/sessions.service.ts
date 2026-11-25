@@ -75,11 +75,14 @@ export class SessionsService {
       return { id, userId: session.userId.toString(), refreshToken: `${id}.${nextSecret}`, expiresAt: session.expiresAt };
    }
 
-   async revoke(refreshToken: string): Promise<void> {
+   /** Returns whether there was a session to revoke. */
+   async revoke(refreshToken: string): Promise<boolean> {
       const parsed = parseToken(refreshToken);
-      if (parsed) {
-         await this.sessionModel.deleteOne({ _id: parsed.id }).exec();
+      if (!parsed) {
+         return false;
       }
+      const { deletedCount } = await this.sessionModel.deleteOne({ _id: parsed.id }).exec();
+      return deletedCount > 0;
    }
 
    async isActive(id: string, userId: string): Promise<boolean> {

@@ -2,6 +2,7 @@ import { Transform, Type, plainToInstance } from 'class-transformer';
 import { IsBoolean, IsIn, IsInt, IsString, IsUrl, Matches, Max, Min, MinLength, validateSync } from 'class-validator';
 
 const NODE_ENVS = ['development', 'test', 'production'] as const;
+const LOG_LEVELS = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] as const;
 const PLACEHOLDER_SECRET_PREFIX = 'development-only';
 
 export class Environment {
@@ -38,6 +39,9 @@ export class Environment {
    @IsInt()
    @Min(0)
    TRUST_PROXY_HOPS: number = 0;
+
+   @IsIn(LOG_LEVELS)
+   LOG_LEVEL: (typeof LOG_LEVELS)[number] = 'info';
 
    // Off unless explicitly enabled, so production does not expose the docs by accident.
    @Transform(({ value }: { value: unknown }) => (value === 'true' ? true : value === 'false' ? false : value))

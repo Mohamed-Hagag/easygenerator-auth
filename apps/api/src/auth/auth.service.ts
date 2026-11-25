@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
 import { AccessTokenService } from '../sessions/access-token.service.js';
 import { type IssuedSession, SessionsService } from '../sessions/sessions.service.js';
@@ -16,6 +16,8 @@ export type AuthTokens = {
 
 @Injectable()
 export class AuthService {
+   private readonly logger = new Logger(AuthService.name);
+
    constructor(
       private readonly users: UsersService,
       private readonly passwords: PasswordService,
@@ -25,7 +27,9 @@ export class AuthService {
 
    async signUp({ email, name, password }: SignUpDto): Promise<UserDocument> {
       const passwordHash = await this.passwords.hash(password);
-      return this.users.create({ email, name, passwordHash });
+      const user = await this.users.create({ email, name, passwordHash });
+      this.logger.log({ event: 'auth.signup.succeeded', userId: user.id });
+      return user;
    }
 
    async signIn({ email, password }: SignInDto): Promise<UserDocument> {
@@ -33,8 +37,11 @@ export class AuthService {
       const matches = await this.passwords.verify(user?.passwordHash, password);
 
       if (!user || !matches) {
+         // No email: people sometimes type their password into that field.
+         this.logger.warn({ event: 'auth.signin.failed' });
          throw new UnauthorizedException('Invalid email or password');
       }
+      this.logger.log({ event: 'auth.signin.succeeded', userId: user.id });
       return user;
    }
 
@@ -51,8 +58,8 @@ export class AuthService {
    }
 
    async endSession(refreshToken: string | null): Promise<void> {
-      if (refreshToken) {
-         await this.sessions.revoke(refreshToken);
+      if (refreshToken && (await this.sessions.revoke(refreshToken))) {
+         this.logger.log({ event: 'auth.session.ended' });
       }
    }
 
