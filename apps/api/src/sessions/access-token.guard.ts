@@ -1,11 +1,11 @@
 import { type CanActivate, type ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { SessionsService } from '../sessions/sessions.service.js';
+import type { AuthenticatedRequest } from '../common/authenticated-request.js';
+import { IS_PUBLIC_KEY } from '../common/public.decorator.js';
 import { AccessTokenService } from './access-token.service.js';
-import { readAccessToken } from './auth-cookies.js';
-import type { AuthenticatedRequest } from './authenticated-request.js';
-import { IS_PUBLIC_KEY } from './public.decorator.js';
+import { readAccessToken } from './session-cookies.js';
+import { SessionsService } from './sessions.service.js';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

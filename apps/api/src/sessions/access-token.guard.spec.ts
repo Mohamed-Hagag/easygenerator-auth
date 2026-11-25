@@ -3,10 +3,10 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SessionsService } from '../sessions/sessions.service.js';
+import { Public } from '../common/public.decorator.js';
 import { AccessTokenGuard } from './access-token.guard.js';
 import { AccessTokenService } from './access-token.service.js';
-import { Public } from './public.decorator.js';
+import type { SessionsService } from './sessions.service.js';
 
 class TestController {
    @Public()

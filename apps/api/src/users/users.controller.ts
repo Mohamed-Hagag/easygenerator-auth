@@ -1,7 +1,7 @@
 import { Controller, Get, Header, UnauthorizedException } from '@nestjs/common';
 import { ApiCookieAuth, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
-import { CurrentUserId } from './current-user.decorator.js';
+import { CurrentUserId } from '../auth/current-user.decorator.js';
 import { UserResponse, toUserResponse } from './user-response.js';
 import { UsersService } from './users.service.js';
 

@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
+import { AccessTokenService } from '../sessions/access-token.service.js';
 import { type IssuedSession, SessionsService } from '../sessions/sessions.service.js';
 import type { UserDocument } from '../users/user.schema.js';
 import { UsersService } from '../users/users.service.js';
-import { AccessTokenService } from './access-token.service.js';
 import type { SignInDto } from './dto/sign-in.dto.js';
 import type { SignUpDto } from './dto/sign-up.dto.js';
 import { PasswordService } from './password.service.js';

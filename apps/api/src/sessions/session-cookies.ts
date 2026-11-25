@@ -18,7 +18,7 @@ export const readAccessToken = (request: Request): string | null => readCookie(r
 export const readRefreshToken = (request: Request): string | null => readCookie(request, REFRESH_COOKIE);
 
 @Injectable()
-export class AuthCookies {
+export class SessionCookies {
    private readonly accessOptions: CookieOptions;
    private readonly refreshOptions: CookieOptions;
    private readonly accessMaxAgeMs: number;

@@ -12,13 +12,13 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 
+import { Public } from '../common/public.decorator.js';
+import { SessionCookies, readRefreshToken } from '../sessions/session-cookies.js';
 import type { UserDocument } from '../users/user.schema.js';
 import { UserResponse, toUserResponse } from '../users/user-response.js';
-import { AuthCookies, readRefreshToken } from './auth-cookies.js';
 import { AuthService } from './auth.service.js';
 import { SignInDto } from './dto/sign-in.dto.js';
 import { SignUpDto } from './dto/sign-up.dto.js';
-import { Public } from './public.decorator.js';
 
 const CREDENTIALS_LIMIT = { default: { limit: 10, ttl: 60_000 } };
 const REFRESH_LIMIT = { default: { limit: 30, ttl: 60_000 } };
@@ -30,7 +30,7 @@ const REFRESH_LIMIT = { default: { limit: 30, ttl: 60_000 } };
 export class AuthController {
    constructor(
       private readonly auth: AuthService,
-      private readonly cookies: AuthCookies,
+      private readonly cookies: SessionCookies,
    ) {}
 
    @Post('signup')

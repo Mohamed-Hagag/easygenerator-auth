@@ -4,11 +4,12 @@ import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { AccessTokenGuard } from './auth/access-token.guard.js';
 import { AuthModule } from './auth/auth.module.js';
-import { OriginGuard } from './auth/origin.guard.js';
+import { OriginGuard } from './common/origin.guard.js';
 import { type Environment, validateEnvironment } from './config/environment.js';
 import { HealthController } from './health/health.controller.js';
+import { AccessTokenGuard } from './sessions/access-token.guard.js';
+import { SessionsModule } from './sessions/sessions.module.js';
 
 @Module({
    imports: [
@@ -21,6 +22,8 @@ import { HealthController } from './health/health.controller.js';
       // Default limit per IP address and endpoint; the auth endpoints set stricter ones.
       ThrottlerModule.forRoot({ throttlers: [{ limit: 100, ttl: 60_000 }], errorMessage: 'Too many requests, try again later' }),
       AuthModule,
+      // Needed by the global AccessTokenGuard below.
+      SessionsModule,
    ],
    controllers: [HealthController],
    // Run in this order on every endpoint.

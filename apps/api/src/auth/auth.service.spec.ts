@@ -1,9 +1,9 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { AccessTokenService } from '../sessions/access-token.service.js';
 import type { SessionsService } from '../sessions/sessions.service.js';
 import type { UsersService } from '../users/users.service.js';
-import type { AccessTokenService } from './access-token.service.js';
 import { AuthService } from './auth.service.js';
 import type { PasswordService } from './password.service.js';
 
