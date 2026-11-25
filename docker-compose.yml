@@ -1,0 +1,20 @@
+# Local development database only. It has no password, so it listens on localhost only.
+name: easygenerator-auth
+
+services:
+   mongo:
+      image: mongo:8
+      restart: unless-stopped
+      ports:
+         - '127.0.0.1:27017:27017'
+      volumes:
+         - mongo-data:/data/db
+      healthcheck:
+         test: ['CMD', 'mongosh', '--quiet', '--eval', 'quit(db.adminCommand("ping").ok ? 0 : 1)']
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 10s
+
+volumes:
+   mongo-data:

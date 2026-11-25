@@ -1,0 +1,19 @@
+# Dependencies and build output
+node_modules
+dist
+coverage
+*.tsbuildinfo
+
+# Environment files (only the example is committed)
+.env*
+!.env.example
+
+# Local AI working context (see AI.md for the public account)
+CLAUDE.md
+.claude
+
+# Logs, editors, OS
+*.log
+.vscode
+.idea
+.DS_Store
