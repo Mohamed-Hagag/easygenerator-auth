@@ -15,4 +15,6 @@ export default defineConfig({
       // Same origin for the browser, so the session cookies work without CORS.
       proxy: { '/api': 'http://localhost:3000' },
    },
+   // Same port for the same reason; the proxy is inherited from `server`.
+   preview: { port: 5173, strictPort: true },
 });
