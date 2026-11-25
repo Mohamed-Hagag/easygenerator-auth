@@ -11,25 +11,12 @@ type ErrorBody = {
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 
-/** Express middleware (e.g. the body parser) throws plain errors that carry a 4xx status. */
-const clientErrorStatus = (exception: unknown): number | null => {
-   if (!isRecord(exception) || typeof exception.status !== 'number') {
-      return null;
-   }
-   return exception.status >= 400 && exception.status < 500 ? exception.status : null;
-};
-
 const toErrorBody = (exception: unknown): ErrorBody => {
    if (exception instanceof HttpException) {
       const statusCode = exception.getStatus();
       const response = exception.getResponse();
       const errors = isRecord(response) && isRecord(response.errors) ? (response.errors as FieldErrors) : undefined;
       return { statusCode, message: exception.message, ...(errors && { errors }) };
-   }
-
-   const statusCode = clientErrorStatus(exception);
-   if (statusCode !== null) {
-      return { statusCode, message: 'Invalid request' };
    }
 
    return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' };
