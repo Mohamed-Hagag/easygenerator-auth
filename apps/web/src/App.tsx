@@ -1,17 +1,17 @@
 import { Route, Routes } from 'react-router';
 
-import { RequireGuest, RequireUser } from 'components/route-guards';
-import ApplicationPage from 'pages/application';
+import { GuestRoute, ProtectedRoute } from 'components/layouts/route-guards';
+import HomePage from 'pages/home';
 import NotFoundPage from 'pages/not-found';
 import SignInPage from 'pages/sign-in';
 import SignUpPage from 'pages/sign-up';
 
 const App = () => (
    <Routes>
-      <Route element={<RequireUser />}>
-         <Route path="/" element={<ApplicationPage />} />
+      <Route element={<ProtectedRoute />}>
+         <Route path="/" element={<HomePage />} />
       </Route>
-      <Route element={<RequireGuest />}>
+      <Route element={<GuestRoute />}>
          <Route path="/sign-in" element={<SignInPage />} />
          <Route path="/sign-up" element={<SignUpPage />} />
       </Route>

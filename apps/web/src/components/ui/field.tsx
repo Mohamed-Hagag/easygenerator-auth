@@ -4,20 +4,18 @@ import { Slot } from '@radix-ui/react-slot';
 import { CircleAlert } from 'lucide-react';
 
 import Label from 'components/ui/label';
-import cn from 'utils/lib/cn';
 
 type FieldProps = {
    label: React.ReactNode;
    /** Help shown under the control, e.g. the expected format or a list of rules. */
    hint?: React.ReactNode;
    error?: string;
-   required?: boolean;
-   className?: string;
    /** Exactly one control (Input, Textarea, Select trigger, ...). Field adds id and aria-* props to it via Slot. */
    children: React.ReactElement;
 };
 
-const Field = ({ label, hint, error, required = false, className, children }: FieldProps) => {
+// Every field in this app is required.
+const Field = ({ label, hint, error, children }: FieldProps) => {
    const id = React.useId();
    const hintId = `${id}-hint`;
    const errorId = `${id}-error`;
@@ -26,18 +24,10 @@ const Field = ({ label, hint, error, required = false, className, children }: Fi
    const describedBy = [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(' ') || undefined;
 
    return (
-      <div className={cn('flex flex-col gap-1.5', className)}>
-         <Label htmlFor={id}>
-            {label}
-            {required ? null : (
-               <>
-                  {' '}
-                  <span className="font-normal text-muted-foreground">(optional)</span>
-               </>
-            )}
-         </Label>
+      <div className="flex flex-col gap-1.5">
+         <Label htmlFor={id}>{label}</Label>
 
-         <Slot id={id} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required={required || undefined}>
+         <Slot id={id} aria-describedby={describedBy} aria-invalid={error ? true : undefined} aria-required>
             {children}
          </Slot>
 

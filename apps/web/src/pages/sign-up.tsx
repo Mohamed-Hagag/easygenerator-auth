@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import AuthLayout from 'components/auth-layout';
-import FormAlert from 'components/form-alert';
+import AuthLayout from 'components/layouts/auth-layout';
 import PasswordChecklist from 'components/password-checklist';
-import PasswordInput from 'components/password-input';
 import Button from 'components/ui/button';
 import Field from 'components/ui/field';
+import FormAlert from 'components/ui/form-alert';
 import Input from 'components/ui/input';
+import PasswordInput from 'components/ui/password-input';
 import { useSignUp } from 'hooks/use-session';
 import { type SignUpValues, signUpSchema } from 'utils/auth-schemas';
 import { applySubmitError } from 'utils/form-errors';
@@ -36,13 +36,13 @@ const SignUpPage = () => {
       <AuthLayout title="Create your account" alternative={{ text: 'Already have an account?', linkText: 'Sign in', to: '/sign-in' }}>
          <form noValidate onSubmit={onSubmit} className="grid gap-5">
             <FormAlert message={errors.root?.message} />
-            <Field label="Email" required error={errors.email?.message}>
+            <Field label="Email" error={errors.email?.message}>
                <Input type="email" autoComplete="email" {...register('email')} />
             </Field>
-            <Field label="Name" required error={errors.name?.message}>
+            <Field label="Name" error={errors.name?.message}>
                <Input autoComplete="name" {...register('name')} />
             </Field>
-            <Field label="Password" required error={errors.password?.message} hint={<PasswordChecklist password={password} />}>
+            <Field label="Password" error={errors.password?.message} hint={<PasswordChecklist password={password} />}>
                <PasswordInput autoComplete="new-password" {...register('password')} />
             </Field>
             <Button type="submit" loading={isSubmitting}>

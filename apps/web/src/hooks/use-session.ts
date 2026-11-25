@@ -12,7 +12,7 @@ export type User = {
 
 const SESSION_KEY = ['session'];
 
-/** null means "not signed in". Other failures stay errors, so they are never mistaken for being signed out. */
+/** null means "not signed in". Other failures stay errors, so a failed background check keeps the last known user. */
 const fetchSession = async (): Promise<User | null> => {
    try {
       return await apiRequest<User>('/users/me');
@@ -39,8 +39,6 @@ const useSetSession = () => {
    return async (user: User | null): Promise<void> => {
       // A check that started earlier must not overwrite the new state.
       await queryClient.cancelQueries({ queryKey: SESSION_KEY });
-      // Drop everything else that was loaded for the previous user.
-      queryClient.removeQueries({ predicate: ({ queryKey }) => queryKey[0] !== SESSION_KEY[0] });
       queryClient.setQueryData(SESSION_KEY, user);
    };
 };
