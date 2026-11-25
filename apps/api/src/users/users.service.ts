@@ -30,6 +30,10 @@ export class UsersService implements OnModuleInit {
       }
    }
 
+   findById(id: string): Promise<UserDocument | null> {
+      return this.userModel.findById(id).exec();
+   }
+
    findByEmailWithPassword(email: string): Promise<UserDocument | null> {
       return this.userModel.findOne({ email }).select('+passwordHash').exec();
    }

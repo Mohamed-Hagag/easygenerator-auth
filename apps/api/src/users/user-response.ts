@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import type { UserDocument } from '../../users/user.schema.js';
+import type { UserDocument } from './user.schema.js';
 
 export class UserResponse {
    @ApiProperty({ example: '665f1c2e8b3e4a0012345678' })
