@@ -12,12 +12,15 @@
       "lint": "npm run lint --workspaces --if-present",
       "typecheck": "npm run typecheck --workspaces --if-present",
       "build": "npm run build --workspaces --if-present",
-      "test": "npm run test --workspaces --if-present"
+      "test": "npm run test --workspaces --if-present",
+      "dev:web": "npm run dev -w web",
+      "dev": "concurrently --kill-others --names api,web \"npm:dev:api\" \"npm:dev:web\""
    },
    "engines": {
       "node": ">=24"
    },
    "devDependencies": {
+      "concurrently": "^10.0.7",
       "prettier": "^3.10.1",
       "prettier-plugin-tailwindcss": "^0.8.1"
    }
