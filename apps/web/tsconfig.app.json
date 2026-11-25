@@ -18,6 +18,7 @@
       /* Base-path imports, e.g. 'utils/lib/cn'. Vite reads these via resolve.tsconfigPaths. */
       "paths": {
          "components/*": ["./src/components/*"],
+         "hooks/*": ["./src/hooks/*"],
          "pages/*": ["./src/pages/*"],
          "utils/*": ["./src/utils/*"]
       },

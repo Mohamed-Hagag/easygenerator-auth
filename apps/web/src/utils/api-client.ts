@@ -1,13 +1,13 @@
 import { ApiError, toApiError } from 'utils/api-error';
 
 const TIMEOUT_MS = 15_000;
-const REFRESH_LOCK = 'auth-refresh';
+const SESSION_LOCK = 'auth-session';
 
 type RequestOptions = {
    method?: 'GET' | 'POST';
    body?: unknown;
-   /** Set to false where a 401 is a final answer (sign in, log out, ...) instead of an expired access token. */
-   refreshOnUnauthorized?: boolean;
+   /** For sign up, sign in and log out: a 401 is a final answer, and the request must not overlap a refresh. */
+   changesSession?: boolean;
 };
 
 const send = async (path: string, { method = 'GET', body }: RequestOptions): Promise<Response> => {
@@ -36,15 +36,17 @@ const requestRefresh = async (): Promise<boolean> => {
    throw await toApiError(response);
 };
 
-// Refresh tokens work once and the API treats a second use as theft, so tabs must take turns.
+// Requests that replace or clear the session cookies take turns, in all tabs. Refresh tokens work once and the API treats a
+// second use as theft; and a failed refresh clears the cookies, which must not happen right after a sign-in has set them.
 // navigator.locks is missing on insecure origins (plain http other than localhost).
-const refreshAcrossTabs = (): Promise<boolean> => ('locks' in navigator ? navigator.locks.request(REFRESH_LOCK, requestRefresh) : requestRefresh());
+const withSessionLock = async <T>(task: () => Promise<T>): Promise<T> =>
+   'locks' in navigator ? await navigator.locks.request(SESSION_LOCK, task) : task();
 
 let pendingRefresh: Promise<boolean> | null = null;
 
 /** Requests of this tab that fail at the same time share one refresh. */
 const refreshSession = (): Promise<boolean> => {
-   pendingRefresh ??= refreshAcrossTabs().finally(() => {
+   pendingRefresh ??= withSessionLock(requestRefresh).finally(() => {
       pendingRefresh = null;
    });
    return pendingRefresh;
@@ -52,10 +54,10 @@ const refreshSession = (): Promise<boolean> => {
 
 /** Sends a request to the API, refreshing the session once if the access token has expired. */
 export const apiRequest = async <T>(path: string, options: RequestOptions = {}): Promise<T> => {
-   const { refreshOnUnauthorized = true } = options;
+   const { changesSession = false } = options;
 
-   let response = await send(path, options);
-   if (response.status === 401 && refreshOnUnauthorized && (await refreshSession())) {
+   let response = changesSession ? await withSessionLock(() => send(path, options)) : await send(path, options);
+   if (response.status === 401 && !changesSession && (await refreshSession())) {
       response = await send(path, options);
    }
 

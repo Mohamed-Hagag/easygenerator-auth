@@ -8,7 +8,7 @@ import cn from 'utils/lib/cn';
 
 type FieldProps = {
    label: React.ReactNode;
-   /** Help text shown under the control, e.g. the expected format. */
+   /** Help shown under the control, e.g. the expected format or a list of rules. */
    hint?: React.ReactNode;
    error?: string;
    required?: boolean;
@@ -42,9 +42,9 @@ const Field = ({ label, hint, error, required = false, className, children }: Fi
          </Slot>
 
          {hint ? (
-            <p id={hintId} className="text-sm text-muted-foreground">
+            <div id={hintId} className="text-sm text-muted-foreground">
                {hint}
-            </p>
+            </div>
          ) : null}
 
          {error ? (
